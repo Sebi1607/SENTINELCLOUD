@@ -16,7 +16,7 @@ from app.routes import (
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 1. Ensure SQLite tables exist on startup
+    # 1. Ensure database tables exist on startup
     Base.metadata.create_all(bind=engine)
 
     # 2. Start background AsyncIOScheduler probe loops
@@ -35,11 +35,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Merge configured CORS origins with localhost:3000 and 127.0.0.1:3000
+# Merge parsed comma-separated CORS_ORIGINS with local development origins
 allowed_origins = list(
     dict.fromkeys(
         [
-            *settings.CORS_ORIGINS,
+            *settings.cors_origins_list,
             "http://localhost:3000",
             "http://127.0.0.1:3000",
             "http://localhost:5173",
